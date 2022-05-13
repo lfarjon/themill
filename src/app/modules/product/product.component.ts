@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { getImageUrl } from '@takeshape/routing';
 import { Category, Product } from 'src/app/models/models';
 import { ProductsService } from 'src/app/services/products/products.service';
-import { Subject, interval, map, take, Subscription, Observable, timer } from 'rxjs';
+import { Subject, interval, map, take, Subscription, Observable, timer, takeUntil } from 'rxjs';
 import localeFr from '@angular/common/locales/fr'; 
 import { registerLocaleData } from '@angular/common';
 registerLocaleData(localeFr);
@@ -49,17 +49,19 @@ export class ProductComponent implements OnInit, OnDestroy {
     //Get other products from same category
     this._productsService.getProducts(this._route.snapshot.params['slug'])
     .valueChanges
+    .pipe(takeUntil(this._unsubscribeAll))
     .subscribe(({ data, loading }) => {
       this.loadingOthers = loading;
       this.category = data.getCategoryList.items[0] as Category;
       this.categoryProducts = this.category.products;
     });
 
-    
     //countdown to midnight
     this.midnight.setHours(0, 0, 0, 0);
     this.midnight.setDate(this.midnight.getDate() + 1)
-    this.countDown = timer(0, this.tick).subscribe(() => --this.counter);
+    this.countDown = timer(0, this.tick)
+    .pipe(takeUntil(this._unsubscribeAll))
+    .subscribe(() => --this.counter);
 
     this.countDown$ = interval(1000).pipe(
       map((x) => {

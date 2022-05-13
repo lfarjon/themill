@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Category, Product } from 'src/app/models/models';
 import { getImageUrl } from '@takeshape/routing';
 import { CategoriesService } from 'src/app/services/categories/categories.service';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-category',
@@ -30,6 +30,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this._categoriesService.getCategory(this._route.snapshot.params['slug'])
     .valueChanges
+    .pipe(takeUntil(this._unsubscribeAll))
     .subscribe(({ data, loading }) => {
       this.loading = loading;
       this.category = data.getCategoryList.items[0] as Category;

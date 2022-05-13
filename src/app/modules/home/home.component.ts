@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CategoriesService } from 'src/app/services/categories/categories.service';
 import { Router } from '@angular/router';
 import { getImageUrl } from '@takeshape/routing';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -26,6 +26,7 @@ private _unsubscribeAll: Subject<any> = new Subject<any>();
     ngOnInit(): void {
       this._categoriesService.getCategoryList()
       .valueChanges
+      .pipe(takeUntil(this._unsubscribeAll))
       .subscribe(({ data, loading }) => {
         this.loading = loading;
         this.categories = data.getCategoryList.items;
