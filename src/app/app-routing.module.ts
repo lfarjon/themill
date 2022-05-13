@@ -1,10 +1,23 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Route } from '@angular/router';
+import { LayoutComponent } from './layouts/layout/layout.component';
 
-const routes: Routes = [];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
-})
-export class AppRoutingModule { }
+export const appRoutes: Route[] = [
+  {
+    path: '',
+    pathMatch: 'full',
+    component: LayoutComponent,
+    loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule)
+  },
+  {
+    path: 'category/:slug',
+    pathMatch: 'full',
+    component: LayoutComponent,
+    loadChildren: () => import('./modules/category/category.module').then(m => m.CategoryModule)
+  },
+  {
+    path: 'product/:slug',
+    pathMatch: 'full',
+    component: LayoutComponent,
+    loadChildren: () => import('./modules/product/product.module').then(m => m.ProductModule)
+  }
+];

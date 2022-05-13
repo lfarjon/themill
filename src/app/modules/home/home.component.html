@@ -1,0 +1,48 @@
+
+<div class="flex flex-col min-w-0 max-w-7xl justify-center mx-auto">
+
+    <!-- Spinner -->
+    <div class="mx-auto justify-center items-center">
+        <mat-spinner diameter="40" *ngIf="loading"></mat-spinner>
+    </div>
+    <!-- Spinner End -->
+    <section class="text-gray-700 body-font overflow-hidden bg-white" *ngIf="!loading">
+        <div class="container px-5 pt-12 pb-24 mx-auto">
+            <div class="lg:w-4/5 mx-auto flex flex-wrap">
+                <!-- Shop Title -->
+                <div class="text-gray-900 text-4xl title-font font-medium mb-10 w-full text-center">
+                    Welcome to GoodMarkt
+                </div>
+                <!-- Shop Title End -->
+                <!-- Categories List -->
+                <ul class="w-full mx-auto justify-center gap-4 items-center max-w-lg w-full">
+                    <a 
+                        *ngFor="let category of categories"
+                        href="javascript:void(0)" 
+                        [routerLink]="['category', category.slug]">
+                        <li 
+                        class="flex flex-row items-center bg-white rounded-lg border border-gray-200 shadow-md w-full mb-4">
+                            <img 
+                                class="rounded-l-lg h-20 w-20 object-cover" 
+                                [src]="getImageUrl(category.products[0].image.path)" 
+                                [alt]="category.name"
+                            />
+                            <div class="flex flex-row p-5 justify-between items-center w-full">   
+                                <div class="flex flex-col">
+                                    <div class="text-md lg:text-lg font-semibold">
+                                        {{ category.name }} ({{ category.products.length }})                                    </div>
+                                    <div class="text-xs text-secondary -mt-1">
+                                        {{category.slug}}
+                                    </div>
+                                </div>
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            </div>
+                        </li>
+                    </a>
+
+                </ul>
+                <!-- Categories List End -->
+            </div>
+        </div>
+    </section>
+</div>
