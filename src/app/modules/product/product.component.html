@@ -26,7 +26,7 @@
                     </div>
                     <div class="flex mb-4">
                         <span class="mr-3 text-xs text-secondary">
-                            <strong>Free shipping before midnight</strong> - {{hours}}h {{minutes}}m {{seconds}}s left
+                            <strong>Free shipping before midnight</strong> - {{ countDown$ | async  | formatTime }} left
                         </span>
                     </div>
                     <!-- Product Description -->

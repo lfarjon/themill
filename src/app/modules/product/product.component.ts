@@ -1,19 +1,19 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getImageUrl } from '@takeshape/routing';
 import { Category, Product } from 'src/app/models/models';
 import { ProductsService } from 'src/app/services/products/products.service';
-import { Subject, interval, map, take } from 'rxjs';
+import { Subject, interval, map, take, Subscription, Observable, timer } from 'rxjs';
 import localeFr from '@angular/common/locales/fr'; 
 import { registerLocaleData } from '@angular/common';
 registerLocaleData(localeFr);
-
 
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.scss']
 })
+
 export class ProductComponent implements OnInit, OnDestroy {
   
   product: any;
@@ -22,10 +22,11 @@ export class ProductComponent implements OnInit, OnDestroy {
   categoryProducts: Product[] = [];
   category: any;
   getImageUrl = getImageUrl;
-  countDown:any;
-  seconds: any;
-  minutes: any;
-  hours: any;
+  countDown!: Subscription;
+  countDown$!: Observable<any>;
+  counter = 1800;
+  tick = 1000;
+  midnight = new Date();
 
   //To unsubscribe OnDestroy
   private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -55,22 +56,18 @@ export class ProductComponent implements OnInit, OnDestroy {
     });
 
     
-    const now = new Date();
-    const midnight = new Date();
-    midnight.setHours(0,0,0,0);
-    midnight.setDate(midnight.getDate() + 1);
-    const duration = midnight.getTime() - now.getTime(); // Time left until midnight
-    
-    interval(1000)
-    .pipe(take(duration), 
-      map(count => duration - count))
-    .subscribe(millisToMidnight => {
-      
-      this.seconds = millisToMidnight % Math.floor((1000 * 60) / 1000);
-      this.minutes = Math.floor(millisToMidnight % (1000*60*60) / (1000*60));
-      this.hours = Math.floor(millisToMidnight % (1000*60*60*24) / (1000*60*60));
+    //countdown to midnight
+    this.midnight.setHours(0, 0, 0, 0);
+    this.midnight.setDate(this.midnight.getDate() + 1)
+    this.countDown = timer(0, this.tick).subscribe(() => --this.counter);
 
-    })
+    this.countDown$ = interval(1000).pipe(
+      map((x) => {
+        return Math.floor(
+          (this.midnight.getTime() - new Date().getTime()) / 1000
+        );
+      })
+    );
 
   }
 

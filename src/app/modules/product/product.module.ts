@@ -3,13 +3,15 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 //Component & Routes
 import { ProductComponent } from './product.component';
+import { FormatTimePipe } from 'src/app/pipes/formatTime';
 import { productRoutes } from './product.routing';
 //Angular Material
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
-    ProductComponent
+    ProductComponent,
+    FormatTimePipe
   ],
   imports: [
     CommonModule,
